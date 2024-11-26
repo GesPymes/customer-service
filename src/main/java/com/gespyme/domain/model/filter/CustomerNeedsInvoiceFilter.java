@@ -1,4 +1,23 @@
 package com.gespyme.domain.model.filter;
 
-public class CustomerNeedsInvoiceFilter {
+import com.gespyme.commons.model.filter.FieldFilter;
+import com.gespyme.commons.repository.criteria.SearchCriteria;
+import com.gespyme.commons.repository.criteria.SearchOperation;
+import com.gespyme.domain.model.CustomerFilter;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Objects;
+
+@Component
+public class CustomerNeedsInvoiceFilter implements FieldFilter<CustomerFilter> {
+    @Override
+    public boolean apply(CustomerFilter customerFilter) {
+        return Objects.nonNull(customerFilter.getNeedsInvoice());
+    }
+
+    @Override
+    public void addSearchCriteria(CustomerFilter customerFilter, List<SearchCriteria> searchCriteriaList) {
+        searchCriteriaList.add(SearchCriteria.builder().key("needsInvoice").operation(SearchOperation.EQUAL).value(customerFilter.getNeedsInvoice()).build());
+    }
 }

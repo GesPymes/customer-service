@@ -1,8 +1,9 @@
 package com.gespyme.infrastructure.adapters.output.query.field;
 
-import com.gespyme.domain.model.criteria.SearchCriteria;
+import com.gespyme.commons.repository.PredicateBuilder;
+import com.gespyme.commons.repository.QueryField;
+import com.gespyme.commons.repository.criteria.SearchCriteria;
 import com.gespyme.infrastructure.adapters.output.model.entities.QCustomerEntity;
-import com.gespyme.infrastructure.adapters.output.query.PredicateBuilder;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

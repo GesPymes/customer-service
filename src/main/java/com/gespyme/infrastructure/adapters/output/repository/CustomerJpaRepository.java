@@ -1,10 +1,10 @@
 package com.gespyme.infrastructure.adapters.output.repository;
 
+import com.gespyme.commons.repository.QueryField;
+import com.gespyme.commons.repository.criteria.SearchCriteria;
 import com.gespyme.domain.model.Customer;
-import com.gespyme.domain.model.criteria.SearchCriteria;
 import com.gespyme.domain.repository.CustomerRepository;
 import com.gespyme.infrastructure.adapters.output.model.entities.CustomerEntity;
-import com.gespyme.infrastructure.adapters.output.query.field.QueryField;
 import com.gespyme.infrastructure.adapters.output.repository.jpa.CustomerRepositorySpringJpa;
 import com.gespyme.infrastructure.mapper.CustomerInfrastructureMapper;
 import com.querydsl.core.BooleanBuilder;

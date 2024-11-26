@@ -1,10 +1,10 @@
 package com.gespyme.application.port.output;
 
 import com.gespyme.application.usecase.FindCustomersUseCase;
+import com.gespyme.commons.model.filter.FieldFilter;
+import com.gespyme.commons.repository.criteria.SearchCriteria;
 import com.gespyme.domain.model.Customer;
 import com.gespyme.domain.model.CustomerFilter;
-import com.gespyme.domain.model.criteria.SearchCriteria;
-import com.gespyme.domain.model.filter.CustomerFieldFilter;
 import com.gespyme.domain.repository.CustomerRepository;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,9 @@ import java.util.List;
 @Component
 public class FindCustomersPort implements FindCustomersUseCase {
     private final CustomerRepository customerRepository;
-    private final List<CustomerFieldFilter> customerFilters;
+    private final List<FieldFilter<CustomerFilter>> customerFilters;
 
-    public FindCustomersPort(CustomerRepository customerRepository, List<CustomerFieldFilter> customerFilters) {
+    public FindCustomersPort(CustomerRepository customerRepository, List<FieldFilter<CustomerFilter>> customerFilters) {
         this.customerRepository = customerRepository;
         this.customerFilters = customerFilters;
     }

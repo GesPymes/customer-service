@@ -9,5 +9,5 @@ public class CustomerFilter {
     private String address;
     private String mobilePhone;
     private String email;
-    private boolean needsInvoice;
+    private Boolean needsInvoice;
 }

@@ -10,8 +10,10 @@ import com.gespyme.domain.model.Customer;
 import com.gespyme.domain.model.CustomerFilter;
 import com.gespyme.infrastructure.mapper.CustomerInfrastructureMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -24,40 +26,45 @@ public class CustomerController {
     private final DeleteCustomerUseCase deleteCustomerUseCase;
     private final CreateCustomerUseCase createCustomerUseCase;
     private final ModifyCustomersUseCase modifyCustomersUseCase;
-    private final ValidatorService<CustomerBaseModelApi> validatorService;
+
+    private final ValidatorService<CustomerBaseModelApi> validator;
 
 
     @GetMapping("/{customerId}")
-    public CustomerModelApi getCustomerById(@PathVariable("customerId") String customerId) {
-        validatorService.validateId(customerId);
+    public ResponseEntity<CustomerModelApi> getCustomerById(@PathVariable("customerId") String customerId) {
+        validator.validateId(customerId);
         Customer customer = findCustomerByIdUseCase.getCustomerById(customerId);
-        return customerMapper.map(customer);
+        return ResponseEntity.ok(customerMapper.map(customer));
     }
 
     @GetMapping
-    public List<CustomerModelApi> findCustomers(CustomerFilterModelApi customerFilterModelApi) {
-       CustomerFilter customerFilter =  customerMapper.map(customerFilterModelApi);
+    public ResponseEntity<List<CustomerModelApi>> findCustomers(@RequestBody CustomerFilterModelApi customerFilterModelApi) {
+        validator.validate(customerFilterModelApi, List.of(Validator.ONE_PARAM_NOT_NULL));
+        CustomerFilter customerFilter = customerMapper.map(customerFilterModelApi);
         List<Customer> customers = findCustomersUseCase.findCustomer(customerFilter);
-        return customerMapper.map(customers);
+        return ResponseEntity.ok(customerMapper.map(customers));
     }
 
     @DeleteMapping("/{customerId}")
-    public void deleteCustomer(@PathVariable("customerId") String customerId) {
-        validatorService.validateId(customerId);
+    public ResponseEntity<Void> deleteCustomer(@PathVariable("customerId") String customerId) {
+        validator.validateId(customerId);
         deleteCustomerUseCase.deleteCustomer(customerId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping
-    public String createCustomer(@RequestBody CustomerModelApi customerApiModel) {
-        validatorService.validate(customerApiModel, List.of(Validator.ALL_PARAMS_NOT_NULL));
-        Customer customer = createCustomerUseCase.createCustomer(customerMapper.map(customerApiModel));
-        return customer.getCustomerId();
+    public ResponseEntity<CustomerModelApi> createCustomer(@RequestBody CustomerModelApi CustomerModelApi) {
+        validator.validate(CustomerModelApi, List.of(Validator.ALL_PARAMS_NOT_NULL));
+        Customer customer = createCustomerUseCase.createCustomer(customerMapper.map(CustomerModelApi));
+        URI location = URI.create("/customer/" + customer.getCustomerId());
+        return ResponseEntity.created(location).body(customerMapper.map(customer));
     }
 
     @PatchMapping("/{customerId}")
-    public CustomerModelApi modifyCustomer(@PathVariable("customerId") String customerId, @RequestBody CustomerModelApi customerApiModel) {
-        validatorService.validate(customerApiModel, List.of(Validator.ONE_PARAM_NOT_NULL));
-        Customer customer = modifyCustomersUseCase.modifyCustomer(customerId, customerMapper.map(customerApiModel));
-        return customerMapper.map(customer);
+    public ResponseEntity<CustomerModelApi> modifyCustomer(@PathVariable("customerId") String customerId, @RequestBody CustomerModelApi customerModelApi) {
+        validator.validateId(customerId);
+        validator.validate(customerModelApi, List.of(Validator.ONE_PARAM_NOT_NULL));
+        Customer customer = modifyCustomersUseCase.modifyCustomer(customerId, customerMapper.map(customerModelApi));
+        return ResponseEntity.ok(customerMapper.map(customer));
     }
 }
