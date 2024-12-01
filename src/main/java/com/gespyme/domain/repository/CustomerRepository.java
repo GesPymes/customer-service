@@ -6,7 +6,6 @@ import com.gespyme.domain.model.Customer;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public interface CustomerRepository extends GenericRepository<Customer> {

@@ -18,11 +18,13 @@ public interface CustomerInfrastructureMapper {
     CustomerFilter map(CustomerFilterModelApi customerFilterModelApi);
 
     Customer map(CustomerModelApi customerApiModel);
+
     List<CustomerModelApi> map(List<Customer> customers);
 
     CustomerModelApi map(Customer customers);
 
     List<Customer> mapEntityList(List<CustomerEntity> customerEntity);
+
     Customer map(CustomerEntity customerEntity);
 
     CustomerEntity mapToEntity(Customer customer);

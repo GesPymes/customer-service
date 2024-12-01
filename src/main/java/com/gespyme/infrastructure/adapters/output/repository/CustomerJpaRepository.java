@@ -32,7 +32,7 @@ public class CustomerJpaRepository implements CustomerRepository {
     public List<Customer> findByCriteria(List<SearchCriteria> searchCriteria) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         searchCriteria.stream().forEach(sc -> queryFieldMap.get(sc.getKey()).addToQuery(booleanBuilder, sc));
-        List<CustomerEntity> entities =  (List<CustomerEntity>) customerRepositorySpringJpa.findAll(booleanBuilder);
+        List<CustomerEntity> entities = (List<CustomerEntity>) customerRepositorySpringJpa.findAll(booleanBuilder);
         return mapper.mapEntityList(entities);
     }
 

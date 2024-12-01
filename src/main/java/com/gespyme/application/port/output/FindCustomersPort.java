@@ -23,7 +23,7 @@ public class FindCustomersPort implements FindCustomersUseCase {
 
     public List<Customer> findCustomer(CustomerFilter customerFilter) {
         List<SearchCriteria> searchCriterias = new ArrayList<>();
-        customerFilters.stream().filter(f -> f.apply(customerFilter)).forEach(f-> f.addSearchCriteria(customerFilter, searchCriterias));
+        customerFilters.stream().filter(f -> f.apply(customerFilter)).forEach(f -> f.addSearchCriteria(customerFilter, searchCriterias));
         return customerRepository.findByCriteria(searchCriterias);
     }
 }

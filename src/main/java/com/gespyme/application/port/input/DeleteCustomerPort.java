@@ -16,7 +16,7 @@ public class DeleteCustomerPort implements DeleteCustomerUseCase {
 
     public void deleteCustomer(String customerId) {
         Optional<Customer> customer = repository.findById(customerId);
-        if(customer.isEmpty()) {
+        if (customer.isEmpty()) {
             throw new NotFoundException("Customer " + customerId + " not found");
         }
         repository.deleteById(customerId);

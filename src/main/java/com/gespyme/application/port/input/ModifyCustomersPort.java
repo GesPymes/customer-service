@@ -16,7 +16,7 @@ public class ModifyCustomersPort implements ModifyCustomersUseCase {
 
     public Customer modifyCustomer(String customerId, Customer newCustomerData) {
         Optional<Customer> customer = repository.findById(customerId);
-        if(customer.isEmpty()) {
+        if (customer.isEmpty()) {
             throw new NotFoundException("Customer " + customerId + " not found");
         }
         return repository.merge(newCustomerData, customer.get());

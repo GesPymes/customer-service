@@ -16,7 +16,7 @@ public class FindCustomerByIdPort implements FindCustomerByIdUseCase {
 
     public Customer getCustomerById(String customerId) {
         Optional<Customer> customer = repository.findById(customerId);
-        if(customer.isEmpty()) {
+        if (customer.isEmpty()) {
             throw new NotFoundException("Customer " + customerId + " not found");
         }
         return customer.get();
