@@ -38,7 +38,7 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerModelApi>> findCustomers(@RequestBody CustomerFilterModelApi customerFilterModelApi) {
+    public ResponseEntity<List<CustomerModelApi>> findCustomers(CustomerFilterModelApi customerFilterModelApi) {
         validator.validate(customerFilterModelApi, List.of(Validator.ONE_PARAM_NOT_NULL));
         CustomerFilter customerFilter = customerMapper.map(customerFilterModelApi);
         List<Customer> customers = findCustomersUseCase.findCustomer(customerFilter);

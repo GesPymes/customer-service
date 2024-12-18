@@ -857,7 +857,7 @@
 											"script": {
 												"exec": [
 													"var jsonData = JSON.parse(responseBody);\r",
-													"pm.globals.set(\"token\", \"Bearer \" + jsonData.token);\r",
+													"pm.globals.set(\"user_token\", \"Bearer \" + jsonData.token);\r",
 													"\r",
 													"pm.test(\"Token not null\", function () {\r",
 													"    const jsonData = pm.response.json(); \r",
@@ -1176,7 +1176,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"name\": \"John\"\r\n}\r\n",
+											"raw": "",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1184,7 +1184,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8081/customer",
+											"raw": "http://localhost:8081/customer?name=John",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -1192,6 +1192,12 @@
 											"port": "8081",
 											"path": [
 												"customer"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "John"
+												}
 											]
 										}
 									},
@@ -1200,17 +1206,17 @@
 							]
 						},
 						{
-							"name": "KO - Find customer - User",
+							"name": "KO - Find customer by name - Admin Copy",
 							"item": [
 								{
-									"name": "GetToken User",
+									"name": "GetToken Admin",
 									"event": [
 										{
 											"listen": "test",
 											"script": {
 												"exec": [
 													"var jsonData = JSON.parse(responseBody);\r",
-													"pm.globals.set(\"token\", \"Bearer \" + jsonData.token);\r",
+													"pm.globals.set(\"admin_token\", \"Bearer \" + jsonData.token);\r",
 													"\r",
 													"pm.test(\"Token not null\", function () {\r",
 													"    const jsonData = pm.response.json(); \r",
@@ -1230,7 +1236,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"email\" : \"gespyme.employee@gmail.com\",\r\n    \"password\" : \"employee-gespyme-2024-99Qabcde\"\r\n}",
+											"raw": "{\r\n    \"email\" : \"admi.gespyme@gmail.com\",\r\n    \"password\" : \"admin-gespyme-2024-99Pabcde\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1270,9 +1276,13 @@
 											"listen": "test",
 											"script": {
 												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
+													"});\r",
 													"\r",
-													"pm.test(\"Status code is 403\", function () {\r",
-													"    pm.response.to.have.status(403); \r",
+													"pm.test(\"Empty response\", function () {\r",
+													"    const jsonData = pm.response.json(); \r",
+													"    pm.expect(jsonData).to.be.empty; \r",
 													"});"
 												],
 												"type": "text/javascript"
@@ -1287,13 +1297,13 @@
 										"header": [
 											{
 												"key": "Authorization",
-												"value": "{{user_token}}",
+												"value": "{{admin_token}}",
 												"type": "default"
 											}
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"name\": \"John\"\r\n}\r\n",
+											"raw": "",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1301,7 +1311,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8081/customer",
+											"raw": "http://localhost:8081/customer?name=ANY",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -1309,6 +1319,12 @@
 											"port": "8081",
 											"path": [
 												"customer"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "ANY"
+												}
 											]
 										}
 									},
@@ -1389,6 +1405,134 @@
 												"exec": [
 													"pm.test(\"Status code is 200\", function () {\r",
 													"    pm.response.to.have.status(200); \r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{admin_token}}",
+												"type": "default"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8081/customer?address=\"10 Downing Street, London, SW1A 2AA, United Kingdom\"",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"customer"
+											],
+											"query": [
+												{
+													"key": "address",
+													"value": "\"10 Downing Street, London, SW1A 2AA, United Kingdom\""
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "KO - Find customer by address - Admin",
+							"item": [
+								{
+									"name": "GetToken Admin",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var jsonData = JSON.parse(responseBody);\r",
+													"pm.globals.set(\"admin_token\", \"Bearer \" + jsonData.token);\r",
+													"\r",
+													"pm.test(\"Token not null\", function () {\r",
+													"    const jsonData = pm.response.json(); \r",
+													"    pm.expect(jsonData.token).not.null; \r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\" : \"admi.gespyme@gmail.com\",\r\n    \"password\" : \"admin-gespyme-2024-99Pabcde\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/login",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "FindCustomer",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.request.headers.add({\r",
+													"    key: 'Authorization',\r",
+													"    value: 'Bearer ' + pm.environment.get(\"token\")\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
+													"});\r",
+													"\r",
+													"pm.test(\"Empty response\", function () {\r",
+													"    const jsonData = pm.response.json(); \r",
+													"    pm.expect(jsonData).to.be.empty; \r",
 													"});"
 												],
 												"type": "text/javascript"
@@ -1409,7 +1553,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"address\": \"10 Downing Street, London, SW1A 2AA, United Kingdom\"\r\n}\r\n",
+											"raw": "",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1417,7 +1561,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8081/customer",
+											"raw": "http://localhost:8081/customer?address=ANY",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -1425,6 +1569,12 @@
 											"port": "8081",
 											"path": [
 												"customer"
+											],
+											"query": [
+												{
+													"key": "address",
+													"value": "ANY"
+												}
 											]
 										}
 									},
@@ -1525,7 +1675,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"lastName\" : \"Doe Doe\"\r\n}\r\n",
+											"raw": "{\r\n  \"address\": \"10 Downing Street, London, SW1A 2AA, United Kingdom\"\r\n}\r\n",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1533,7 +1683,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8081/customer",
+											"raw": "http://localhost:8081/customer?lastName=Doe",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -1541,6 +1691,139 @@
 											"port": "8081",
 											"path": [
 												"customer"
+											],
+											"query": [
+												{
+													"key": "lastName",
+													"value": "Doe"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "KO - Find customer by lastName - Admin",
+							"item": [
+								{
+									"name": "GetToken Admin",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var jsonData = JSON.parse(responseBody);\r",
+													"pm.globals.set(\"admin_token\", \"Bearer \" + jsonData.token);\r",
+													"\r",
+													"pm.test(\"Token not null\", function () {\r",
+													"    const jsonData = pm.response.json(); \r",
+													"    pm.expect(jsonData.token).not.null; \r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\" : \"admi.gespyme@gmail.com\",\r\n    \"password\" : \"admin-gespyme-2024-99Pabcde\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/login",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "FindCustomer",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.request.headers.add({\r",
+													"    key: 'Authorization',\r",
+													"    value: 'Bearer ' + pm.environment.get(\"token\")\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
+													"});\r",
+													"\r",
+													"pm.test(\"Empty response\", function () {\r",
+													"    const jsonData = pm.response.json(); \r",
+													"    pm.expect(jsonData).to.be.empty; \r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{admin_token}}",
+												"type": "default"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"address\": \"10 Downing Street, London, SW1A 2AA, United Kingdom\"\r\n}\r\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8081/customer?lastName=Doa",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"customer"
+											],
+											"query": [
+												{
+													"key": "lastName",
+													"value": "Doa"
+												}
 											]
 										}
 									},
@@ -1641,7 +1924,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"email\": \"johndoedoe@example.com\"\r\n}\r\n",
+											"raw": "",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1649,7 +1932,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8081/customer",
+											"raw": "http://localhost:8081/customer?email=johndoedoe@example.com",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -1657,6 +1940,139 @@
 											"port": "8081",
 											"path": [
 												"customer"
+											],
+											"query": [
+												{
+													"key": "email",
+													"value": "johndoedoe@example.com"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "KO - Find customer by email - Admin",
+							"item": [
+								{
+									"name": "GetToken Admin",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var jsonData = JSON.parse(responseBody);\r",
+													"pm.globals.set(\"admin_token\", \"Bearer \" + jsonData.token);\r",
+													"\r",
+													"pm.test(\"Token not null\", function () {\r",
+													"    const jsonData = pm.response.json(); \r",
+													"    pm.expect(jsonData.token).not.null; \r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\" : \"admi.gespyme@gmail.com\",\r\n    \"password\" : \"admin-gespyme-2024-99Pabcde\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/login",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "FindCustomer",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.request.headers.add({\r",
+													"    key: 'Authorization',\r",
+													"    value: 'Bearer ' + pm.environment.get(\"token\")\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
+													"});\r",
+													"\r",
+													"pm.test(\"Empty response\", function () {\r",
+													"    const jsonData = pm.response.json(); \r",
+													"    pm.expect(jsonData).to.be.empty; \r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{admin_token}}",
+												"type": "default"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8081/customer?email=ANY@example.com",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"customer"
+											],
+											"query": [
+												{
+													"key": "email",
+													"value": "ANY@example.com"
+												}
 											]
 										}
 									},
@@ -1757,7 +2173,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"needsInvoice\": false\r\n}\r\n",
+											"raw": "\r\n",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1765,7 +2181,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8081/customer",
+											"raw": "http://localhost:8081/customer?needsInvoice=false",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -1773,6 +2189,12 @@
 											"port": "8081",
 											"path": [
 												"customer"
+											],
+											"query": [
+												{
+													"key": "needsInvoice",
+													"value": "false"
+												}
 											]
 										}
 									},
@@ -1873,7 +2295,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"mobilePhone\": \"000 00 00 00\"\r\n}\r\n",
+											"raw": "",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1881,7 +2303,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8081/customer",
+											"raw": "http://localhost:8081/customer?mobilePhone=000 00 00 00",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -1889,6 +2311,139 @@
 											"port": "8081",
 											"path": [
 												"customer"
+											],
+											"query": [
+												{
+													"key": "mobilePhone",
+													"value": "000 00 00 00"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "KO - Find customer by mobile - Admin",
+							"item": [
+								{
+									"name": "GetToken Admin",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var jsonData = JSON.parse(responseBody);\r",
+													"pm.globals.set(\"admin_token\", \"Bearer \" + jsonData.token);\r",
+													"\r",
+													"pm.test(\"Token not null\", function () {\r",
+													"    const jsonData = pm.response.json(); \r",
+													"    pm.expect(jsonData.token).not.null; \r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\" : \"admi.gespyme@gmail.com\",\r\n    \"password\" : \"admin-gespyme-2024-99Pabcde\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/login",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "FindCustomer",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.request.headers.add({\r",
+													"    key: 'Authorization',\r",
+													"    value: 'Bearer ' + pm.environment.get(\"token\")\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
+													"});\r",
+													"\r",
+													"pm.test(\"Empty response\", function () {\r",
+													"    const jsonData = pm.response.json(); \r",
+													"    pm.expect(jsonData).to.be.empty; \r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{admin_token}}",
+												"type": "default"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8081/customer?mobilePhone=ANY",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"customer"
+											],
+											"query": [
+												{
+													"key": "mobilePhone",
+													"value": "ANY"
+												}
 											]
 										}
 									},
@@ -1997,7 +2552,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8081/customer",
+											"raw": "http://localhost:8081/customer?name=John&email=johndoedoe@example.com&needsInvoice=false",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -2005,6 +2560,20 @@
 											"port": "8081",
 											"path": [
 												"customer"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "John"
+												},
+												{
+													"key": "email",
+													"value": "johndoedoe@example.com"
+												},
+												{
+													"key": "needsInvoice",
+													"value": "false"
+												}
 											]
 										}
 									},
@@ -2852,7 +3421,7 @@
 					"name": "GetById",
 					"item": [
 						{
-							"name": "KO - GetById - User",
+							"name": "OK - GetById - User",
 							"item": [
 								{
 									"name": "GetToken User",
@@ -2862,7 +3431,7 @@
 											"script": {
 												"exec": [
 													"var jsonData = JSON.parse(responseBody);\r",
-													"pm.globals.set(\"token\", \"Bearer \" + jsonData.token);\r",
+													"pm.globals.set(\"user_token\", \"Bearer \" + jsonData.token);\r",
 													"\r",
 													"pm.test(\"Token not null\", function () {\r",
 													"    const jsonData = pm.response.json(); \r",
@@ -2922,8 +3491,8 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test(\"Status code is 403\", function () {\r",
-													"    pm.response.to.have.status(403); \r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200); \r",
 													"});\r",
 													"\r",
 													""
@@ -3225,7 +3794,7 @@
 											"script": {
 												"exec": [
 													"var jsonData = JSON.parse(responseBody);\r",
-													"pm.globals.set(\"token\", \"Bearer \" + jsonData.token);\r",
+													"pm.globals.set(\"user_token\", \"Bearer \" + jsonData.token);\r",
 													"\r",
 													"pm.test(\"Token not null\", function () {\r",
 													"    const jsonData = pm.response.json(); \r",
@@ -3496,6 +4065,68 @@
 									"response": []
 								},
 								{
+									"name": "CreateCustomer Copy",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.request.headers.add({\r",
+													"    key: 'Authorization',\r",
+													"    value: 'Bearer ' + pm.environment.get(\"token\")\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201); \r",
+													"});\r",
+													"\r",
+													"var jsonData = JSON.parse(responseBody);\r",
+													"pm.globals.set(\"customer_to_del_id\", jsonData.customerId);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{admin_token}}",
+												"type": "default"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"name\": \"John\",\r\n  \"lastName\" : \"Doe Doe\",\r\n  \"address\": \"10 Downing Street, London, SW1A 2AA, United Kingdom\",\r\n  \"mobilePhone\": \"000 00 00 00\",\r\n  \"email\": \"johndoedoe@example.com\",\r\n  \"needsInvoice\": false\r\n}\r\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8081/customer",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"customer"
+											]
+										}
+									},
+									"response": []
+								},
+								{
 									"name": "DeleteCustomer",
 									"event": [
 										{
@@ -3542,7 +4173,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8081/customer/{{customer_id}}",
+											"raw": "http://localhost:8081/customer/{{customer_to_del_id}}",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -3550,7 +4181,7 @@
 											"port": "8081",
 											"path": [
 												"customer",
-												"{{customer_id}}"
+												"{{customer_to_del_id}}"
 											]
 										}
 									},

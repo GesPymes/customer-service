@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.gespyme</groupId>
             <artifactId>authenticator-library</artifactId>
-            <version>0.0.3-SNAPSHOT</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.gespyme</groupId>
